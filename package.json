@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
@@ -12,5 +13,13 @@
   "dependencies": {
     "express": "^4.19.2",
     "multer": "^1.4.5-lts.1"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/theusccs111/paulo.git"
+  },
+  "bugs": {
+    "url": "https://github.com/theusccs111/paulo/issues"
+  },
+  "homepage": "https://github.com/theusccs111/paulo#readme"
 }

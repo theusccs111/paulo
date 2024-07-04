@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário Atualizável</title>
+    <style>
+        .container {
+            width: 80%;
+            margin: auto;
+        }
+
+        .status {
+            width: 50px;
+            height: 50px;
+            display: inline-block;
+            border-radius: 50%;
+        }
+
+        .green {
+            background-color: green;
+        }
+
+        .yellow {
+            background-color: yellow;
+        }
+
+        .red {
+            background-color: red;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Título</h1>
+        <form id="updateForm" enctype="multipart/form-data" class="hidden">
+            <div>
+                <label for="carousel">Link do Carrossel:</label>
+                <input type="url" id="carousel" name="carousel" required>
+            </div>
+            <div>
+                <label for="msg1">Mensagem 1:</label>
+                <input type="file" id="msg1" name="msg1" accept=".txt" required>
+            </div>
+            <div>
+                <label for="msg2">Mensagem 2:</label>
+                <input type="file" id="msg2" name="msg2" accept=".txt" required>
+            </div>
+            <div>
+                <label for="msg3">Mensagem 3:</label>
+                <input type="file" id="msg3" name="msg3" accept=".txt" required>
+            </div>
+            <div>
+                <label for="status">Status:</label>
+                <select id="status" name="status" required>
+                    <option value="green">Verde</option>
+                    <option value="yellow">Amarelo</option>
+                    <option value="red">Vermelho</option>
+                </select>
+            </div>
+            <button type="submit">Atualizar</button>
+        </form>
+
+        <div id="output">
+            <h2>Visualização:</h2>
+            <div>
+                <a id="carouselLink" href="#" target="_blank">Carrossel</a>
+            </div>
+            <div id="messages">
+                <p id="displayMsg1">Mensagem 1</p>
+                <p id="displayMsg2">Mensagem 2</p>
+                <p id="displayMsg3">Mensagem 3</p>
+            </div>
+            <div id="statusDisplay" class="status"></div>
+        </div>
+    </div>
+
+    <script>
+        async function checkIP() {
+            const response = await fetch('/check-ip');
+            const data = await response.json();
+            if (data.allowed) {
+                document.getElementById('updateForm').classList.remove('hidden');
+            }
+        }
+
+        document.getElementById('updateForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+            const response = await fetch('/upload', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById('carouselLink').href = formData.get('carousel');
+                document.getElementById('displayMsg1').textContent = data.msg1;
+                document.getElementById('displayMsg2').textContent = data.msg2;
+                document.getElementById('displayMsg3').textContent = data.msg3;
+
+                const status = formData.get('status');
+                const statusDisplay = document.getElementById('statusDisplay');
+                statusDisplay.className = 'status ' + status;
+            }
+        });
+
+        async function fetchData() {
+            const response = await fetch('/data');
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById('carouselLink').href = data.carousel;
+                document.getElementById('displayMsg1').textContent = data.msg1;
+                document.getElementById('displayMsg2').textContent = data.msg2;
+                document.getElementById('displayMsg3').textContent = data.msg3;
+                document.getElementById('statusDisplay').className = 'status ' + data.status;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchData();
+            checkIP();
+        });
+    </script>
+</body>
+
+</html>
